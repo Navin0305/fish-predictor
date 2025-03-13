@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fish Species Predictor</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+        h2 {
+            font-weight: 700;
+            color: #343a40;
+        }
+        .btn-predict {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            width: 100%;
+            font-size: 18px;
+            padding: 10px;
+        }
+        .btn-predict:hover {
+            background-color: #218838;
+        }
+        .loader {
+            display: none;
+            margin: 20px auto;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>🐟 Fish Species Predictor</h2>
+        <form id="predict-form">
+            <div class="mb-3">
+                <input type="number" class="form-control" id="weight" placeholder="Weight (g)" required>
+            </div>
+            <div class="mb-3">
+                <input type="number" class="form-control" id="length1" placeholder="Length1 (cm)" required>
+            </div>
+            <div class="mb-3">
+                <input type="number" class="form-control" id="length2" placeholder="Length2 (cm)" required>
+            </div>
+            <div class="mb-3">
+                <input type="number" class="form-control" id="length3" placeholder="Length3 (cm)" required>
+            </div>
+            <div class="mb-3">
+                <input type="number" class="form-control" id="height" placeholder="Height (cm)" required>
+            </div>
+            <div class="mb-3">
+                <input type="number" class="form-control" id="width" placeholder="Width (cm)" required>
+            </div>
+            <button type="submit" class="btn btn-predict">🔍 Predict</button>
+        </form>
+
+        <!-- Loader Animation -->
+        <div class="loader" id="loader"></div>
+
+        <h3 id="result" class="mt-3"></h3>
+    </div>
+
+    <script>
+        document.getElementById('predict-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            document.getElementById("loader").style.display = "block"; // Show loader
+            document.getElementById("result").innerText = ""; // Clear previous result
+            
+            const data = {
+                Weight: parseFloat(document.getElementById('weight').value),
+                Length1: parseFloat(document.getElementById('length1').value),
+                Length2: parseFloat(document.getElementById('length2').value),
+                Length3: parseFloat(document.getElementById('length3').value),
+                Height: parseFloat(document.getElementById('height').value),
+                Width: parseFloat(document.getElementById('width').value)
+            };
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("loader").style.display = "none"; // Hide loader
+                document.getElementById("result").innerHTML = `🎯 <b>Prediction:</b> ${data["Predicted Species"]} <br> 🔬 <b>Confidence:</b> ${data["Confidence"]}%`;
+            })
+            .catch(error => {
+                document.getElementById("loader").style.display = "none"; // Hide loader
+                document.getElementById("result").innerText = "Error: " + error;
+            });
+        });
+    </script>
+
+</body>
+</html>
