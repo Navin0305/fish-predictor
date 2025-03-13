@@ -10,7 +10,7 @@ with open("fish_species_classifier.pkl", "rb") as model_file:
 species_mapping = {0: "Perch", 1: "Parkki", 2: "Bream", 3: "Roach", 4: "Pike", 5: "Smelt", 6: "Whitefish"}
 
 # Flask App
-app = Flask(__name__, template_folder="Ttemplates")
+app = Flask(__name__, template_folder="templates")
 
 @app.route('/')
 def home():
